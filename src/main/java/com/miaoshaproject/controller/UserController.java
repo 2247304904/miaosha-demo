@@ -1,6 +1,7 @@
 package com.miaoshaproject.controller;
 
 import com.miaoshaproject.controller.viewobject.UserVO;
+import com.miaoshaproject.response.CommonReturnType;
 import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
@@ -27,12 +28,14 @@ public class UserController {
 
     @RequestMapping("/get")
     @ResponseBody
-    public UserVO getUser(@RequestParam(name = "id") Integer id) {
+    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) {
         //调用service服务获取对应的id用户对象并返回给前端
         UserModel userModel = userService.getUserById(id);
 
         //将核心领域模型用户对象转化为可供UI使用的viewObject
-        return convertFromModel(userModel);
+        UserVO userVO = convertFromModel(userModel);
+
+        return CommonReturnType.create(userVO);
 
     }
 

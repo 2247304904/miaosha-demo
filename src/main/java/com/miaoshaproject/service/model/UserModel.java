@@ -1,6 +1,8 @@
 package com.miaoshaproject.service.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @program: miaosha
@@ -9,6 +11,8 @@ import lombok.Data;
  * @create: 2022-04-04 16:11
  **/
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserModel {
     private Integer id;
     private String name;

@@ -1,6 +1,8 @@
 package com.miaoshaproject.controller.viewobject;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @program: miaosha
@@ -9,6 +11,8 @@ import lombok.Data;
  * @create: 2022-04-04 18:07
  **/
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserVO {
     private Integer id;
     private String name;

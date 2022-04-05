@@ -36,7 +36,7 @@ public class UserController extends BaseController {
 
 
     //用户获取otp短信接口
-    @RequestMapping(value = "/getotp")
+    @RequestMapping(value = "/getotp", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     @ResponseBody
     public CommonReturnType getOtp(@RequestParam(name = "telphone") String telphone) {
 
@@ -56,7 +56,7 @@ public class UserController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/get",method = RequestMethod.POST)
+    @RequestMapping(value = "/get")
     @ResponseBody
     public CommonReturnType getUser(@RequestParam(name = "id") Integer id) throws BusinessException {
         //调用service服务获取对应的id用户对象并返回给前端
@@ -65,7 +65,7 @@ public class UserController extends BaseController {
         //若获取的对应用户信息不存在
         if (userModel == null) {
 
-           throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
+            throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
         }
 
 
@@ -86,7 +86,6 @@ public class UserController extends BaseController {
         }
 
     }
-
 
 
 }

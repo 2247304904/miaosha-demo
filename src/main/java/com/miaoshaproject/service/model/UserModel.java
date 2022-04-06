@@ -23,4 +23,6 @@ public class UserModel {
     private String thirdPartyId;
 
     private String encrptPassword;
+
+
 }

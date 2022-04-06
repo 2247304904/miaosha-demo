@@ -6,6 +6,7 @@ import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.response.CommonReturnType;
 import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.model.UserModel;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,36 @@ public class UserController extends BaseController {
     private UserService userService;
     @Autowired
     private HttpServletRequest request;
+
+
+    //用户注册接口
+    @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    public CommonReturnType register(@RequestParam (name="telephone")String telephone,
+                                     @RequestParam(name="otpCode")String otpCode,
+                                     @RequestParam(name="name")String name,
+                                     @RequestParam(name="gender")Integer gender,
+                                     @RequestParam(name="age")Integer age,
+                                     @RequestParam(name="password")String password) throws BusinessException {
+
+        //验证手机号和对应的otpCode相符合
+        String inSessionOtpCode = (String) this.request.getSession().getAttribute("telephone");
+
+        if(!com.alibaba.druid.util.StringUtils.equals(otpCode,inSessionOtpCode)){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"短信验证码不符合");
+        }
+        //用户注册的流程
+        UserModel userModel = new UserModel();
+        userModel.setName(name);
+        userModel.setTelephone(telephone);
+        userModel.setGender(Byte.valueOf(String.valueOf(gender)));
+        userModel.setAge(age);
+        userModel.setRegisterMode("byPhone");
+        userModel.setEncrptPassword(MD5Encoder.encode(password.getBytes()));
+
+        userService.register(userModel);
+
+        return CommonReturnType.create(null);
+    }
 
 
     //用户获取otp短信接口

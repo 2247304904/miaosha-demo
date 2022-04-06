@@ -12,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -44,7 +48,7 @@ public class UserController extends BaseController {
                                      @RequestParam(name="name")String name,
                                      @RequestParam(name="gender")Integer gender,
                                      @RequestParam(name="age")Integer age,
-                                     @RequestParam(name="password")String password) throws BusinessException {
+                                     @RequestParam(name="password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
 
         //验证手机号和对应的otpCode相符合
         String inSessionOtpCode = (String) this.request.getSession().getAttribute("telephone");
@@ -59,13 +63,23 @@ public class UserController extends BaseController {
         userModel.setGender(Byte.valueOf(String.valueOf(gender)));
         userModel.setAge(age);
         userModel.setRegisterMode("byPhone");
-        userModel.setEncrptPassword(MD5Encoder.encode(password.getBytes()));
+        userModel.setEncrptPassword(this.EncodeByMD5(password));
 
         userService.register(userModel);
 
         return CommonReturnType.create(null);
     }
 
+    //MD5加密
+    public String EncodeByMD5(String str) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        //确定计算方法
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        BASE64Encoder base64Encoder = new BASE64Encoder();
+        //加密字符串
+        String newstr= base64Encoder.encode(md5.digest(str.getBytes("utf-8")));
+
+        return newstr;
+    }
 
     //用户获取otp短信接口
     @RequestMapping(value = "/getotp", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
